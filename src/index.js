@@ -26,9 +26,7 @@ function defaultParameterValue(a, b = 100) {
  Количество переданных аргументов заранее неизвестно
  */
 function returnArgumentsArray() {
-    var args = [...arguments];
-
-    return args;
+    return [...arguments];
 }
 
 /*
@@ -68,6 +66,7 @@ function returnCounter(number = 0) {
  Функция должна привязать переданные аргументы к функции F и вернуть получившуюся функцию
  */
 function bindFunction(fn) {
+    return fn.bind(...[...arguments]);
 }
 
 export {
