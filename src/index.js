@@ -129,9 +129,9 @@ function calculator(number = 0) {
                 for (let index = 0; index < arguments.length; index++) {
                     if (arguments[index] === 0) {
                         throw new Error('division by 0');
+                    } else {                    
+                        number /= arguments[index];
                     }
-                    
-                    number /= arguments[index];
                 }
 
                 return number;
