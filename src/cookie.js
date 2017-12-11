@@ -1,4 +1,5 @@
 /**
+
  * ДЗ 7.2 - Создать редактор cookie с возможностью фильтрации
  *
  * На странице должна быть таблица со списком имеющихся cookie:
@@ -24,7 +25,6 @@
  *
  * Запрещено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
  */
-
 /**
  * homeworkContainer - это контейнер для всех ваших домашних заданий
  * Если вы создаете новые html-элементы и добавляете их на страницу, то дабавляйте их только в этот контейнер
@@ -38,9 +38,51 @@ let addNameInput = homeworkContainer.querySelector('#add-name-input');
 let addValueInput = homeworkContainer.querySelector('#add-value-input');
 let addButton = homeworkContainer.querySelector('#add-button');
 let listTable = homeworkContainer.querySelector('#list-table tbody');
-
-filterNameInput.addEventListener('keyup', function() {
-});
-
+function filterCookiesList() {
+    let tempObj = getCookies(),
+        filteringName = filterNameInput.value;
+    for (let cookiesName in tempObj) {
+        if (!cookiesName.includes(filteringName) && !tempObj[cookiesName].includes(filteringName)) {
+            delete tempObj[cookiesName];
+        }
+    }
+    createTable(tempObj);
+}
+function getCookies() {
+    if (!document.cookie) {
+        
+        return;
+    } else {
+    let splitedList = document.cookie.split('; '),
+        resultList = splitedList.reduce((prev, next) => {
+            
+            let [name, value] = next.split('=');
+            prev[name] = value;
+            return prev;
+        }, {});
+    return resultList;
+    }
+}
+function createTable(obj) {
+    listTable.innerHTML = '';
+    for (let indexName in obj) {
+        let table = document.createElement('tr');
+        table.innerHTML = `<td>${indexName}</td><td>${obj[indexName]}</td><td><button>Delete coockie</button></td>`;
+        listTable.appendChild(table);
+    }
+}
+filterNameInput.addEventListener('keyup', () => filterCookiesList());
 addButton.addEventListener('click', () => {
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+    filterCookiesList();
+});
+window.addEventListener('DOMContentLoaded', () => createTable(getCookies));
+listTable.addEventListener('click', function(e) {
+    if (e.target.tagName === 'BUTTON') {
+        let deleteEl = e.target.parentNode.parentNode,
+            currentName = deleteEl.firstElementChild.innerText,
+            date = new Date(0);
+        document.cookie = `${currentName}=; expires=${date.toUTCString()}`;
+        this.removeChild(deleteEl);
+    }
 });
